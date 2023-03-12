@@ -233,9 +233,12 @@ async def chat(post_fname):
             break
         if question.lower() == "list":
             list_posts(lposts[:-3])
+        print('\n')
+        print('creating embed for user input...', end='\r')
         nd_qembed = get_embeds([question])[0]
         nd_scores = cosine_similarity(nd_qembed, nd_embeds)
         nd_idxs_best = nd_scores.argsort()[-c_num_closest:]
+        print('checking with GPT which post is relevant ...', end='\r')
         l_score_strs = await verify_relevant(nd_idxs_best, lpost_texts, question)
         nd_relevance_scores = np.zeros(len(l_score_strs))
         for iscore, score_str in enumerate(l_score_strs):
@@ -249,6 +252,7 @@ async def chat(post_fname):
             print(response)
             continue
         idx_best_post = nd_idxs_best[i_argmax]
+        print('extracting the relevant section...', end='\r')
         quote = await chatgpt_req('Your job is to extract all sections from the text the appears \
                 in the \"Post\" section of the user content that would provide \
                 an answer to the user\'s question in the \"Question\" section.',

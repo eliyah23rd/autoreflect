@@ -222,6 +222,11 @@ def list_posts(lposts):
 '''
 Core chat loop
 '''
+
+def print_status(msg):
+    print('\x1b[2K\r', end='')
+    print(msg, end='\r')
+
 async def chat(post_fname):
     nd_embeds = np.load(f'{post_fname}_embeds.npy')
     l_b_valid_embeds = [val > 0.9 for val in np.linalg.norm(nd_embeds, axis=1)]
@@ -233,12 +238,13 @@ async def chat(post_fname):
             break
         if question.lower() == "list":
             list_posts(lposts[:-3])
-        print('\n')
-        print('creating embed for user input...', end='\r')
+            continue
+        print('\n\n')
+        print_status('creating embed for user input...')
         nd_qembed = get_embeds([question])[0]
         nd_scores = cosine_similarity(nd_qembed, nd_embeds)
         nd_idxs_best = nd_scores.argsort()[-c_num_closest:]
-        print('checking with GPT which post is relevant ...', end='\r')
+        print_status('checking with GPT which post is relevant ...')
         l_score_strs = await verify_relevant(nd_idxs_best, lpost_texts, question)
         nd_relevance_scores = np.zeros(len(l_score_strs))
         for iscore, score_str in enumerate(l_score_strs):
@@ -252,15 +258,17 @@ async def chat(post_fname):
             print(response)
             continue
         idx_best_post = nd_idxs_best[i_argmax]
-        print('extracting the relevant section...', end='\r')
+        print_status('extracting the relevant section...')
         quote = await chatgpt_req('Your job is to extract all sections from the text the appears \
                 in the \"Post\" section of the user content that would provide \
                 an answer to the user\'s question in the \"Question\" section.',
                 f'Post:\n{lpost_texts[idx_best_post]}\nQuestion:\n{question}')
+        print_status('generating GPT response...')
         response = await chatgpt_req('You are a helpful assistant. Please read all the text the appears \
                 in the \"Background\" section of the user content and answer the \
                 user\'s question in the \"Question\" section. It is very important that you do not use the words \"Background\" or \"Question\" in your response',
                 f'Background:\n{quote}\nQuestion:\n{question}')
+        print_status('verifying the response...')
         score_str = await chatgpt_req('Your job is to determine whether the answer provided in \
                 \"Answer\" section is supported by the text in the \"Background\" \
                 section. For reference the original question appears in the \

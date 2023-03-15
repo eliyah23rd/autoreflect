@@ -1,3 +1,5 @@
-For the question "What is moral responsibility?" you answered yes and the user satisfaction was -1 out of 10.
 For the question "What is moral responsibility?" you answered yes and the user satisfaction was 9 out of 10.
 For the question "should we trust our opinions?" you answered no and the user satisfaction was 9 out of 10.
+For the question "does receiving create an obligation?" you answered no and the user satisfaction was 5 out of 10.
+For the question "what is the definition of the self?" you answered yes and the user satisfaction was 9 out of 10.
+For the question "what is failure?" you answered no and the user satisfaction was 9 out of 10.

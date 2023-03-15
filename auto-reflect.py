@@ -416,7 +416,7 @@ async def chat(post_fname):
         satisfaction was {feedback_score} out of 10.\n'
         extra_history = ' '.join(extra_history.split())
         with open('extra_history.txt', 'at') as fh_extra_history:
-            fh_extra_history.write(extra_history)
+            fh_extra_history.write(extra_history + '\n')
 
             
 
